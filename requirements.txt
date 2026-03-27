@@ -5,9 +5,9 @@ diffusers
 einops
 opencv-python
 numpy
-torch
+# torch (installed via Dockerfile --index-url)
 transformers
-torchvision
+# torchvision (installed via Dockerfile --index-url)
 #taming-transformers-rom1504
 #ConfigArgParse
 #ipdb
@@ -36,5 +36,6 @@ fastapi
 uvicorn
 rembg
 onnxruntime
+gsutil
 #gevent
 #geventhttpclient

@@ -1,0 +1,11 @@
+# Cloud Build job to download weights to GCS
+steps:
+- name: 'python:3.10'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      pip install huggingface-hub
+      python download_models.py
+- name: 'gcr.io/cloud-builders/gsutil'
+  args: ['-m', 'rsync', '-r', './weights', 'gs://vmess-c5e2f-hunyuan-weights/']

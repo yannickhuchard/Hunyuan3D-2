@@ -147,7 +147,7 @@ class ModelWorker:
     def __init__(self,
                  model_path='tencent/Hunyuan3D-2mini',
                  tex_model_path='tencent/Hunyuan3D-2',
-                 subfolder='hunyuan3d-dit-v2-mini-turbo',
+                 subfolder='hunyuan3d-dit-v2-mini',
                  device='cuda',
                  enable_tex=False):
         self.model_path = model_path
@@ -162,13 +162,14 @@ class ModelWorker:
             use_safetensors=True,
             device=device,
         )
-        self.pipeline.enable_flashvdm(mc_algo='mc')
+        # Disable VAE replacement (replace_vae=False) to avoid HF download attempts
+        self.pipeline.enable_flashvdm(mc_algo='mc', replace_vae=False)
         # self.pipeline_t2i = HunyuanDiTPipeline(
         #     'Tencent-Hunyuan/HunyuanDiT-v1.1-Diffusers-Distilled',
         #     device=device
         # )
         if enable_tex:
-            self.pipeline_tex = Hunyuan3DPaintPipeline.from_pretrained(tex_model_path)
+            self.pipeline_tex = Hunyuan3DPaintPipeline.from_pretrained(tex_model_path, local_files_only=True)
 
     def get_queue_length(self):
         if model_semaphore is None:
@@ -301,8 +302,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", type=str, default="0.0.0.0")
     parser.add_argument("--port", type=int, default=8081)
-    parser.add_argument("--model_path", type=str, default='tencent/Hunyuan3D-2mini')
-    parser.add_argument("--tex_model_path", type=str, default='tencent/Hunyuan3D-2')
+    parser.add_argument("--model_path", type=str, default='/app/weights/mini')
+    parser.add_argument("--tex_model_path", type=str, default='/app/weights/paint')
     parser.add_argument("--device", type=str, default="cuda")
     parser.add_argument("--limit-model-concurrency", type=int, default=5)
     parser.add_argument('--enable_tex', action='store_true')
